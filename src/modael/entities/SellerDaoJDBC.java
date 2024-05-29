@@ -1,19 +1,23 @@
 package modael.entities;
 
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+
+import DB.DB;
+import DB.DbException;
 
 public class SellerDaoJDBC implements model.dao.SellerDao{
 
-	List<Seller> seller = new ArrayList<Seller>();
+	private Connection conn = null;
 	
-	public SellerDaoJDBC() {
-		
+	
+	public SellerDaoJDBC(Connection conn) {
+		this.conn = conn;
 	}
 
-	public SellerDaoJDBC(List<Seller> seller) {
-		this.seller = seller;
-	}
 
 	@Override
 	public void Insert(Seller obj) {
@@ -35,15 +39,64 @@ public class SellerDaoJDBC implements model.dao.SellerDao{
 
 	@Override
 	public Seller findById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement st = null;
+		ResultSet rt = null;
+		try {
+			st = conn.prepareStatement("SELECT seller.*,department.Name as DepName "
+					+ "FROM seller INNER JOIN department "
+					+ "ON seller.DepartmentId = department.Id "
+					+ "WHERE seller.Id = ?"
+					);
+			st.setInt(1, id);
+			rt = st.executeQuery();
+			if(rt.next()) {
+				Department department = instaciaDepartamento(rt);
+				Seller obj = instaciaSeller(rt);
+				return obj;
+			}
+			return null;
+		}
+		catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rt);
+		}
+		
+		
 	}
+
+	private Seller instaciaSeller(ResultSet rt) throws SQLException {
+			Seller obj = new Seller();
+			obj.setId(rt.getInt("Id"));
+			obj.setName(rt.getString("Name"));
+			obj.setEmail(rt.getString("Email"));
+			obj.setBaseSalary(rt.getDouble("BaseSalary"));
+			obj.setBirthDay(rt.getDate("BirthDate"));
+			obj.setDepartment(instaciaDepartamento(rt));
+			return obj;
+		
+	}
+
+
+	private Department instaciaDepartamento(ResultSet rt) throws SQLException {
+		Department dep = new Department();
+		dep.setId(rt.getInt("DepartmentId"));
+		dep.setName(rt.getString("DepName"));
+		return dep;
+		}
+
 
 	@Override
 	public List<Seller> findAll() {
-		// TODO Auto-generated method stub
 		return null;
+		
+	
+		}
+		
+	
 	}
 	
 	
-}
+
