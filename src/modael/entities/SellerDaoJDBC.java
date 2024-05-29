@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,14 +26,35 @@ public class SellerDaoJDBC implements model.dao.SellerDao{
 	@Override
 	public void Insert(Seller obj) {
 		PreparedStatement ps = null;
-		ResultSet rt = null;
 		try {
 			ps = conn.prepareStatement("INSERT INTO seller\n"
 					+ "(Name, Email, BirthDate, BaseSalary, DepartmentId)\n"
 					+ "VALUES\n"
-					+ "(?, ?, ?, ?, ?)");
+					+ "(?, ?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, obj.getName());
+			ps.setString(2, obj.getEmail());
+			ps.setString(3, new java.sql.Date(obj.getBirthDay().getTime()).toString());
+			ps.setDouble(4, obj.getBaseSalary());
+			ps.setInt(5, obj.getDepartment().getId());
+			int linhasSql = ps.executeUpdate();
+			if(linhasSql > 0) {
+				ResultSet rt =  ps.getGeneratedKeys();
+				if(rt.next()) {
+					int id = rt.getInt(1);
+					obj.setId(id);
+				}
+				else {
+					throw new DbException("O funcionario não foi acrescentado");
+				}
+			}
 			
-		
+		}
+		catch(SQLException e){
+			throw new DbException(e.getMessage());
+		}
+			
+				
 	}
 
 	@Override
@@ -43,7 +65,21 @@ public class SellerDaoJDBC implements model.dao.SellerDao{
 
 	@Override
 	public void deleteById(Integer id) {
-		// TODO Auto-generated method stub
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("DELETE FROM seller\n"
+					+ "WHERE Id = ?");
+			ps.setInt(1, id);
+			int linhasSql = ps.executeUpdate();
+			if(linhasSql == 0) {
+				throw new DbException("O id não foi encontrado");
+			}
+		}catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(ps);
+		}
 		
 	}
 

@@ -33,5 +33,25 @@ public class Programa {
 		for(Seller obj: list) {
 			System.out.println(obj);
 		}
+		System.out.println("==== TEST 4: seller Department ====");
+		sellerDao.Insert(new Seller(1,"rafael", "rafael@gmail.com", new Date(),2000.00 ,department));
+		list = sellerDao.findAll();
+		for(Seller obj: list) {
+			System.out.println(obj);
+		
+		}
+		System.out.println("==== TEST 5: seller delete ====");
+		System.out.println("Entre com o id que deseja remover!");
+		Integer id = ler.nextInt();
+		sellerDao.deleteById(id);
+		
+		System.out.println("Funcioanrio removido");
+		System.out.println("==== TEST 2: seller Department ====");
+		department = new Department(2, null);
+		list = sellerDao.findByDepatment(department);
+		for(Seller obj: list) {
+			System.out.println(obj);
+		}
 	}
+	
 }
