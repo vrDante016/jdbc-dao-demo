@@ -44,14 +44,16 @@ public class Programa {
 		System.out.println("Entre com o id que deseja remover!");
 		Integer id = ler.nextInt();
 		sellerDao.deleteById(id);
-		
 		System.out.println("Funcioanrio removido");
-		System.out.println("==== TEST 2: seller Department ====");
-		department = new Department(2, null);
-		list = sellerDao.findByDepatment(department);
-		for(Seller obj: list) {
-			System.out.println(obj);
-		}
+		
+		System.out.println("==== TEST 6: seller Department ====");
+		System.out.println("Entre com id");
+		int id2 = ler.nextInt();
+		seller = sellerDao.findById(id2);
+		seller.setName("Martha");
+		sellerDao.Update(seller);
+		
+		
 	}
 	
 }
