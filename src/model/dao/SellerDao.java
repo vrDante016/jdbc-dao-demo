@@ -3,6 +3,7 @@ package model.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import modael.entities.Department;
 import modael.entities.Seller;
 
 public interface SellerDao {
@@ -11,5 +12,8 @@ public interface SellerDao {
 	void Update(Seller obj);
 	void deleteById(Integer id);
 	Seller findById(Integer id);
+	List<Seller> findByDepatment(Department department);
 	List<Seller> findAll();
+	
+	
 }
