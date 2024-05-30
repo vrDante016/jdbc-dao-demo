@@ -28,12 +28,12 @@ public class Programa {
 		for(Seller obj: list) {
 			System.out.println(obj);
 		}
-		System.out.println("==== TEST 3: seller Department ====");
+		System.out.println("==== TEST 3: seller Department findAll ====");
 		list = sellerDao.findAll();
 		for(Seller obj: list) {
 			System.out.println(obj);
 		}
-		System.out.println("==== TEST 4: seller Department ====");
+		System.out.println("==== TEST 4: seller Department insert ====");
 		sellerDao.Insert(new Seller(1,"rafael", "rafael@gmail.com", new Date(),2000.00 ,department));
 		list = sellerDao.findAll();
 		for(Seller obj: list) {
